@@ -20,12 +20,16 @@ public class CustomerOrder {
     @Id
     @GeneratedValue
     private UUID id;
-    private long customer_id;
+    private UUID customerId;
     private OrderStatus status;
-    private long orderDetailsId;
-    private long paymentId;
-    private long shippingAddressId;
+    private UUID orderDetailsId;
+    private UUID paymentId;
     private ShipmentType shipmentType;
-    private Instant createdDate;
-    private Instant updatedDate;
+    private String addressLine1;
+    private String addressLine2;
+    private String city;
+    private String state;
+    private int zip;
+    private Instant createdAt;
+    private Instant updatedAt;
 }

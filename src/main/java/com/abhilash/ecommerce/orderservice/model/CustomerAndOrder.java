@@ -1,13 +1,14 @@
 package com.abhilash.ecommerce.orderservice.model;
 
+import com.abhilash.ecommerce.orderservice.util.CustomerAndOrderId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import java.util.UUID;
 
 @Builder
@@ -15,13 +16,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Address {
+@IdClass(CustomerAndOrderId.class)
+public class CustomerAndOrder {
     @Id
-    @GeneratedValue
-    private UUID id;
-    private String addressLine1;
-    private String addressLine2;
-    private String city;
-    private String state;
-    private int zip;
+    private UUID customerId;
+    @Id
+    private UUID orderId;
 }

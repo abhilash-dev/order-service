@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.UUID;
 
 @Builder
 @Data
@@ -17,7 +18,7 @@ import java.util.List;
 @Entity
 public class OrderDetail {
     @Id
-    private long id;
+    private UUID id;
     @OneToMany
     private List<Item> items;
     private double total;
