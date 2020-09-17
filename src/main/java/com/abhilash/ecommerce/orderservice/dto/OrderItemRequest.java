@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class encapsulates data transfer object to add / update / remove an item to an existing order
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

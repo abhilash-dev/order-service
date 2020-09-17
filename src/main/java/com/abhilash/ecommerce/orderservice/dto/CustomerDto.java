@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/**
+ * @author Abhilash Sulibela
+ *
+ * This class encapsulates data transfer object for Customer entity
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

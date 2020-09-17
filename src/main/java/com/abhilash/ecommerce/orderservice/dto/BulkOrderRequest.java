@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class encapsulates an invidual order part of a Bulk order request
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

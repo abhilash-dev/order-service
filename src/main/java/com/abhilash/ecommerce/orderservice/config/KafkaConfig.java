@@ -19,6 +19,11 @@ import java.util.Map;
 import static com.abhilash.ecommerce.orderservice.util.Constants.BOOTSTRAP_SERVERS_CONFIG;
 import static com.abhilash.ecommerce.orderservice.util.Constants.ORDER_REQUEST_GROUP_ID;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class configures the kafka producers & consumers & registers it with spring
+ */
 @EnableKafka
 @Configuration
 public class KafkaConfig {

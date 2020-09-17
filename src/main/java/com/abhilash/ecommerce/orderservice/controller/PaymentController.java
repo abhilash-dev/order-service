@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class exposes resources to interact with Payment entity through Customer entity
+ */
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/api/customer/{customerId}")

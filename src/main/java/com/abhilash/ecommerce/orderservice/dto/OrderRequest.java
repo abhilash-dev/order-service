@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class encapsulates data transfer object to add a new order
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

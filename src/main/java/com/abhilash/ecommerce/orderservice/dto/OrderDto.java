@@ -10,6 +10,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class encapsulates data transfer object an Order to the end-user abstracting the internal schema
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

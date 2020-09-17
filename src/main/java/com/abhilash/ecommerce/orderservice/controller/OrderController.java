@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class exposes resources to interact with Order entity
+ */
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/api/order")

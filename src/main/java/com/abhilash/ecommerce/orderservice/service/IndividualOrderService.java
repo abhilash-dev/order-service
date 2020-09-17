@@ -31,17 +31,23 @@ public class IndividualOrderService {
     @Synchronized
     @Transactional
     public OrderStatusResponse createOrder(OrderRequest orderRequest) {
+        log.trace("Entering createOrder method with {} ", orderRequest);
+        log.debug("Received a new order request for customer - {}", orderRequest.getCustomerId());
+
         if (!customerRepo.existsById(UUID.fromString(orderRequest.getCustomerId()))) {
+            log.error("BAD REQUEST: Invalid customer id - {}", orderRequest.getCustomerId());
             throw new BadRequestException("Invalid customer");
         }
 
         if (orderRequest.getItems().isEmpty()) {
+            log.error("BAD REQUEST: There must be at-least 1 item in the order for customer - {}", orderRequest.getCustomerId());
             throw new BadRequestException("Bad Request: There must be at-least 1 item in the order");
         }
 
         OrderDetail orderDetail = new OrderDetail();
         List<Item> items = new ArrayList<>();
         double subTotal = 0.0;
+        log.debug("Creating & saving {} - items for customer - {}", orderRequest.getItems(), orderRequest.getCustomerId());
         for (ItemDto itemDto : orderRequest.getItems()) {
             Product product = productRepo.findById(itemDto.getProductId()).orElseThrow(() -> new BadRequestException("One or more products are Invalid"));
             items.add(itemRepo.save(mapItemDtoToEntity(itemDto)));
@@ -54,16 +60,18 @@ public class IndividualOrderService {
 
         CustomerOrder order = buildOrderByShipmentType(orderRequest, orderDetail);
         CustomerOrder savedOrder = orderRepo.save(order);
+        log.debug("New order is persisted with id - {} for customer - {}", savedOrder.getId(), orderRequest.getCustomerId());
         orderDetail.setId(savedOrder.getId());
         orderDetailRepo.save(orderDetail);
-
+        log.debug("saved order details for order - {} ", savedOrder.getId());
         customerAndOrderRepo.save(
                 CustomerAndOrder.builder()
                         .customerId(UUID.fromString(orderRequest.getCustomerId()))
                         .orderId(savedOrder.getId())
                         .build()
         );
-
+        log.debug("saved an entry into CustomerAndOrder table with order - {} & customer - {}", savedOrder.getId(), orderRequest.getCustomerId());
+        log.trace("Finishing createOrder method");
         return OrderStatusResponse.builder()
                 .orderId(savedOrder.getId())
                 .orderStatus(savedOrder.getStatus())
@@ -73,7 +81,10 @@ public class IndividualOrderService {
     @Synchronized
     @Transactional
     public OrderItemResponse addItemsToOrder(OrderItemRequest orderItemRequest) {
+        log.trace("Entering addItemsToOrder method with request - {}", orderItemRequest);
+        log.debug("received a request to add {} items to order - {}", orderItemRequest.getItems().size(), orderItemRequest.getOrderId());
         if (!customerRepo.existsById(orderItemRequest.getCustomerId())) {
+            log.error("BAD REQUEST: Invalid customer with customerId - ", orderItemRequest.getCustomerId());
             throw new BadRequestException("Invalid customer");
         }
 
@@ -88,6 +99,7 @@ public class IndividualOrderService {
         List<Item> newItems = orderItemRequest.getItems().parallelStream().map(this::mapItemDtoToEntity).map(this.itemRepo::save).collect(Collectors.toList());
         orderDetail.getItems().addAll(newItems);
         OrderDetail savedOrderDetails = orderDetailRepo.save(orderDetail);
+        log.trace("Finishing addItemsToOrder method for order - {}", orderItemRequest.getOrderId());
         return OrderItemResponse.builder()
                 .orderId(orderItemRequest.getOrderId())
                 .items(savedOrderDetails.getItems().parallelStream().map(this::mapItemEntityToDTO).collect(Collectors.toList()))
@@ -99,6 +111,7 @@ public class IndividualOrderService {
     @Synchronized
     @Transactional
     public OrderItemResponse removeItemsFromOrder(OrderItemRequest orderItemRequest) {
+        log.trace("Entering removeItemsFromOrder with - {}", orderItemRequest);
         if (!customerRepo.existsById(orderItemRequest.getCustomerId())) {
             throw new BadRequestException("Invalid customer");
         }
@@ -121,6 +134,7 @@ public class IndividualOrderService {
         orderDetail.setItems(orderDetail.getItems().parallelStream().filter(x -> itemRepo.existsById(x.getId())).collect(Collectors.toList()));
         OrderDetail savedOrderDetails = orderDetailRepo.save(orderDetail);
 
+        log.trace("Finishing removeItemsFromOrder for order - {}", orderItemRequest.getOrderId());
         if (savedOrderDetails.getItems().isEmpty()) {
             removeOrder(orderItemRequest.getOrderId(), orderItemRequest.getCustomerId());
             return OrderItemResponse.builder()

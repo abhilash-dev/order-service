@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class exposes resources to interact with product entity
+ */
 @AllArgsConstructor
 @Slf4j
 @RestController

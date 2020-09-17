@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class encapsulates data transfer object to add / update / remove a product from the inventory
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

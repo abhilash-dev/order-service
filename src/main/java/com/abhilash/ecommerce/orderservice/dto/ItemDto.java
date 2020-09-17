@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class encapsulates data transfer object for Item entity
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

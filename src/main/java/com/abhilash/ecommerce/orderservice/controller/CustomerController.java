@@ -7,6 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * @author Abhilash Sulibela
+ * <p>
+ * This class exposes resources to interact with Customer entity
+ */
 @AllArgsConstructor
 @Slf4j
 @RestController
