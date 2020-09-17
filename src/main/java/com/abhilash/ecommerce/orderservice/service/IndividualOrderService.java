@@ -131,7 +131,8 @@ public class IndividualOrderService {
                     itemRepo.delete(itemToBeRemoved);
                 }
         );
-        orderDetail.setItems(orderDetail.getItems().parallelStream().filter(x -> itemRepo.existsById(x.getId())).collect(Collectors.toList()));
+        List<Item> filteredItems = orderDetail.getItems().parallelStream().filter(x -> itemRepo.existsById(x.getId())).collect(Collectors.toList());
+        orderDetail.setItems(filteredItems);
         OrderDetail savedOrderDetails = orderDetailRepo.save(orderDetail);
 
         log.trace("Finishing removeItemsFromOrder for order - {}", orderId);
@@ -170,6 +171,8 @@ public class IndividualOrderService {
         orderDetail.getItems().forEach(item -> {
             itemRepo.deleteById(item.getId());
         });
+
+        //TODO: Consider moving to a different status or schema instead of deleting, could be useful for data anlaysis
         orderDetailRepo.delete(orderDetail);
 
         orderRepo.delete(order);
@@ -177,7 +180,7 @@ public class IndividualOrderService {
         customerAndOrderRepo.delete(customerAndOrder);
 
         return OrderStatusResponse.builder()
-                .orderStatus(OrderStatus.PROCESSED)
+                .orderStatus(OrderStatus.CANCELLED)
                 .orderId(UUID.fromString(orderId))
                 .build();
     }

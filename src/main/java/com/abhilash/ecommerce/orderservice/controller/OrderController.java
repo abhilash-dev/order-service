@@ -35,6 +35,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.addItemsToOrder(orderId, orderItemRequest));
     }
 
+    //TODO: Fix the foreign key constraint issue
     @DeleteMapping(value = "/{orderId}/item")
     public ResponseEntity<OrderItemResponse> deleteItemsFromOrder(@PathVariable("orderId") String orderId, @RequestBody OrderItemRequest orderItemRequest) {
         return ResponseEntity.ok(orderService.removeItemsFromOrder(orderId, orderItemRequest));
