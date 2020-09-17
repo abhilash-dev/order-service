@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.UUID;
 
 @Builder
 @Data
@@ -14,11 +17,8 @@ import javax.persistence.*;
 @Entity
 public class Payment {
     @Id
-    @Column(name = "id")
-    private long id;
-
-    @OneToOne
-    @MapsId
-    private CustomerOrder customer_order;
+    @GeneratedValue
+    private UUID id;
     private PaymentType type;
+    private UUID billingAddressId;
 }

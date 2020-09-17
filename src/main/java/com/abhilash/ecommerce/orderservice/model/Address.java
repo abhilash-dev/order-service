@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.UUID;
 
 @Builder
 @Data
@@ -15,11 +18,7 @@ import javax.persistence.*;
 public class Address {
     @Id
     @GeneratedValue
-    private long id;
-
-    @OneToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "id")
-    private CustomerOrder customer_order;
+    private UUID id;
     private String addressLine1;
     private String addressLine2;
     private String city;
