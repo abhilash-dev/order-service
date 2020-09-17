@@ -1,6 +1,6 @@
 package com.abhilash.ecommerce.orderservice.controller;
 
-import com.abhilash.ecommerce.orderservice.dao.CustomerDao;
+import com.abhilash.ecommerce.orderservice.dto.CustomerDto;
 import com.abhilash.ecommerce.orderservice.service.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,18 +15,18 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<CustomerDao> createCustomer(@RequestBody CustomerDao customerDao) {
-        return ResponseEntity.ok(customerService.createCustomer(customerDao));
+    public ResponseEntity<CustomerDto> createCustomer(@RequestBody CustomerDto customerDto) {
+        return ResponseEntity.ok(customerService.createCustomer(customerDto));
     }
 
     @GetMapping(value = "/{customerId}")
-    public ResponseEntity<CustomerDao> getCustomer(@PathVariable("customerId") String customerId) {
+    public ResponseEntity<CustomerDto> getCustomer(@PathVariable("customerId") String customerId) {
         return ResponseEntity.ok(customerService.getCustomer(customerId));
     }
 
     @PutMapping(value = "/{customerId}")
-    public ResponseEntity<CustomerDao> updateCustomer(@PathVariable("customerId") String customerId, @RequestBody CustomerDao customerDao) {
-        return ResponseEntity.ok(customerService.updateCustomer(customerId, customerDao));
+    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable("customerId") String customerId, @RequestBody CustomerDto customerDto) {
+        return ResponseEntity.ok(customerService.updateCustomer(customerId, customerDto));
     }
 
     @DeleteMapping(value = "/{customerId}")

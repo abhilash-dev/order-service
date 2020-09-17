@@ -1,12 +1,13 @@
 package com.abhilash.ecommerce.orderservice.service;
 
-import com.abhilash.ecommerce.orderservice.dao.CustomerDao;
+import com.abhilash.ecommerce.orderservice.dto.CustomerDto;
 import com.abhilash.ecommerce.orderservice.exception.BadRequestException;
 import com.abhilash.ecommerce.orderservice.model.Customer;
 import com.abhilash.ecommerce.orderservice.repository.CustomerRepo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class CustomerService {
     private final CustomerRepo customerRepo;
 
+    @Transactional
     public void removeCustomer(String customerId) {
         if (!customerRepo.existsById(UUID.fromString(customerId))) {
             throw new BadRequestException("Invalid customerId - " + customerId);
@@ -23,41 +25,43 @@ public class CustomerService {
         customerRepo.deleteById(UUID.fromString(customerId));
     }
 
-    public CustomerDao getCustomer(String customerId) {
+    public CustomerDto getCustomer(String customerId) {
         return mapToDao(customerRepo.findById(UUID.fromString(customerId))
                 .orElseThrow(() -> new BadRequestException("Invalid customerId - " + customerId))
         );
     }
 
-    public CustomerDao updateCustomer(String customerId, CustomerDao customerDao) {
+    @Transactional
+    public CustomerDto updateCustomer(String customerId, CustomerDto customerDto) {
         if (!customerRepo.existsById(UUID.fromString(customerId))) {
             throw new BadRequestException("Invalid customerId - " + customerId);
         }
-        if (customerRepo.existsByEmail(customerDao.getEmail())) {
+        if (customerRepo.existsByEmail(customerDto.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
-        Customer customer = mapToEntity(customerDao);
+        Customer customer = mapToEntity(customerDto);
         customer.setId(UUID.fromString(customerId));
 
         return mapToDao(customerRepo.save(customer));
     }
 
-    public CustomerDao createCustomer(CustomerDao customerDao) {
-        if (customerRepo.existsByEmail(customerDao.getEmail())) {
+    @Transactional
+    public CustomerDto createCustomer(CustomerDto customerDto) {
+        if (customerRepo.existsByEmail(customerDto.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
-        return mapToDao(customerRepo.save(mapToEntity(customerDao)));
+        return mapToDao(customerRepo.save(mapToEntity(customerDto)));
     }
 
-    private Customer mapToEntity(CustomerDao customerDao) {
+    private Customer mapToEntity(CustomerDto customerDto) {
         return Customer.builder()
-                .name(customerDao.getName())
-                .email(customerDao.getEmail())
+                .name(customerDto.getName())
+                .email(customerDto.getEmail())
                 .build();
     }
 
-    private CustomerDao mapToDao(Customer customer) {
-        return CustomerDao.builder()
+    private CustomerDto mapToDao(Customer customer) {
+        return CustomerDto.builder()
                 .id(customer.getId())
                 .name(customer.getName())
                 .email(customer.getEmail())

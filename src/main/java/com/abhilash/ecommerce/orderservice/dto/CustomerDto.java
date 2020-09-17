@@ -1,4 +1,4 @@
-package com.abhilash.ecommerce.orderservice.dao;
+package com.abhilash.ecommerce.orderservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Builder
-public class CustomerDao {
+public class CustomerDto {
     private UUID id;
     private String name;
     private String email;
