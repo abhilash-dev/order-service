@@ -21,6 +21,4 @@ public class Customer {
     private UUID id;
     private String name;
     private String email;
-    private UUID paymentId;
-    //TODO: make this payment field OnetoMany in order to accomodate multiple payments for an individual customer
 }

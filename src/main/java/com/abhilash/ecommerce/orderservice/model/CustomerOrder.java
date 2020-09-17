@@ -22,6 +22,7 @@ public class CustomerOrder {
     private UUID id;
     private UUID customerId;
     private OrderStatus status;
+    //TODO: make this payment field OnetoMany in order to accomodate multiple payments for an individual customer for the same order
     private UUID paymentId;
     private ShipmentType shipmentType;
     private String addressLine1;
