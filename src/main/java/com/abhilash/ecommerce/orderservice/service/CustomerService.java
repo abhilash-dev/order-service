@@ -5,6 +5,7 @@ import com.abhilash.ecommerce.orderservice.exception.BadRequestException;
 import com.abhilash.ecommerce.orderservice.model.Customer;
 import com.abhilash.ecommerce.orderservice.repository.CustomerRepo;
 import lombok.AllArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class CustomerService {
     private final CustomerRepo customerRepo;
 
+    @Synchronized
     @Transactional
     public void removeCustomer(String customerId) {
         if (!customerRepo.existsById(UUID.fromString(customerId))) {
@@ -31,6 +33,7 @@ public class CustomerService {
         );
     }
 
+    @Synchronized
     @Transactional
     public CustomerDto updateCustomer(String customerId, CustomerDto customerDto) {
         if (!customerRepo.existsById(UUID.fromString(customerId))) {
@@ -45,6 +48,7 @@ public class CustomerService {
         return mapToDto(customerRepo.save(customer));
     }
 
+    @Synchronized
     @Transactional
     public CustomerDto createCustomer(CustomerDto customerDto) {
         if (customerRepo.existsByEmail(customerDto.getEmail())) {

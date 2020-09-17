@@ -9,6 +9,7 @@ import com.abhilash.ecommerce.orderservice.repository.CustomerRepo;
 import com.abhilash.ecommerce.orderservice.repository.PaymentRepo;
 import com.abhilash.ecommerce.orderservice.util.CustomerPaymentId;
 import lombok.AllArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ public class PaymentService {
     private final PaymentRepo paymentRepo;
     private final CustomerAndPaymentRepo customerAndPaymentRepo;
 
+    @Synchronized
     @Transactional
     public void removePayment(String paymentId, String customerId) {
         CustomerAndPayment customerAndPayment = customerAndPaymentRepo.findById(new CustomerPaymentId(UUID.fromString(customerId), UUID.fromString(paymentId))).orElseThrow(() -> new BadRequestException("Invalid paymentId - " + paymentId));
@@ -49,6 +51,7 @@ public class PaymentService {
                 .collect(Collectors.toList());
     }
 
+    @Synchronized
     @Transactional
     public PaymentDto updatePayment(String customerId, String paymentId, PaymentDto paymentDto) {
         CustomerAndPayment customerAndPayment = customerAndPaymentRepo.findById(new CustomerPaymentId(UUID.fromString(customerId), UUID.fromString(paymentId))).orElseThrow(() -> new BadRequestException("Invalid paymentId - " + paymentId));
@@ -59,6 +62,7 @@ public class PaymentService {
         return mapToDto(paymentRepo.save(payment));
     }
 
+    @Synchronized
     @Transactional
     public PaymentDto createPayment(String customerId, PaymentDto paymentDto) {
         if (customerRepo.existsById(UUID.fromString(customerId))) {

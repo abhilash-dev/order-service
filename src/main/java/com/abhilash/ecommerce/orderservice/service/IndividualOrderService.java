@@ -6,6 +6,7 @@ import com.abhilash.ecommerce.orderservice.model.*;
 import com.abhilash.ecommerce.orderservice.repository.*;
 import com.abhilash.ecommerce.orderservice.util.CustomerAndOrderId;
 import lombok.AllArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class IndividualOrderService {
     private final CustomerRepo customerRepo;
     private final CustomerAndOrderRepo customerAndOrderRepo;
 
+    @Synchronized
     @Transactional
     public OrderStatusResponse createOrder(OrderRequest orderRequest) {
         if (!customerRepo.existsById(UUID.fromString(orderRequest.getCustomerId()))) {
@@ -68,6 +70,7 @@ public class IndividualOrderService {
                 .build();
     }
 
+    @Synchronized
     @Transactional
     public OrderItemResponse addItemsToOrder(OrderItemRequest orderItemRequest) {
         if (!customerRepo.existsById(orderItemRequest.getCustomerId())) {
@@ -93,6 +96,7 @@ public class IndividualOrderService {
 
     }
 
+    @Synchronized
     @Transactional
     public OrderItemResponse removeItemsFromOrder(OrderItemRequest orderItemRequest) {
         if (!customerRepo.existsById(orderItemRequest.getCustomerId())) {
@@ -134,6 +138,8 @@ public class IndividualOrderService {
 
     }
 
+    @Synchronized
+    @Transactional
     public OrderStatusResponse removeOrder(UUID orderId, UUID customerId) {
         if (!customerRepo.existsById(customerId)) {
             throw new BadRequestException("Invalid customer");
@@ -162,6 +168,7 @@ public class IndividualOrderService {
                 .build();
     }
 
+    @Transactional
     public OrderDto getOrder(UUID orderId, UUID customerId) {
         if (!customerRepo.existsById(customerId)) {
             throw new BadRequestException("Invalid customer");
@@ -192,6 +199,7 @@ public class IndividualOrderService {
                 .build();
     }
 
+    @Transactional
     public List<OrderDto> getAllOrders(UUID customerId) {
         //TODO: Implement later, just reuse the get single order after fetching all orders from mapping
         return Collections.emptyList();

@@ -5,6 +5,7 @@ import com.abhilash.ecommerce.orderservice.exception.BadRequestException;
 import com.abhilash.ecommerce.orderservice.model.Product;
 import com.abhilash.ecommerce.orderservice.repository.ProductRepo;
 import lombok.AllArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private ProductRepo productRepo;
 
+    @Synchronized
     public ProductDto createProduct(ProductDto productDto) {
         return mapToDto(productRepo.save(mapToEntity(productDto)));
     }
@@ -34,6 +36,7 @@ public class ProductService {
         return mapToDto(product);
     }
 
+    @Synchronized
     @Transactional
     public ProductDto updateProduct(String productId, ProductDto productDto) {
         if (!productRepo.existsById(UUID.fromString(productId))) {
@@ -44,6 +47,7 @@ public class ProductService {
         return mapToDto(productRepo.save(product));
     }
 
+    @Synchronized
     @Transactional
     public void removeProduct(String productId) {
         if (!productRepo.existsById(UUID.fromString(productId))) {
