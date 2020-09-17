@@ -33,6 +33,7 @@ public class CustomerOrder {
     private Address billingAddress;
     @OneToOne(mappedBy = "customer_order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Address shippingAddress;
+    private ShipmentType shipmentType;
     private Instant createdDate;
     private Instant updatedDate;
 }
