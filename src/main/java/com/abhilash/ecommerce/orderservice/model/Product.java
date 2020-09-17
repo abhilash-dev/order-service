@@ -21,4 +21,5 @@ public class Product {
     private UUID id;
     private double price;
     private String name;
+    //TODO: Customize the product entity to have various categories & sub-categories
 }
