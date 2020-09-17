@@ -2,6 +2,7 @@ package com.abhilash.ecommerce.orderservice.controller;
 
 import com.abhilash.ecommerce.orderservice.dto.*;
 import com.abhilash.ecommerce.orderservice.service.IndividualOrderService;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/api/order")
+@Api(description = "Resources related to Order entity")
 public class OrderController {
     private final IndividualOrderService orderService;
 

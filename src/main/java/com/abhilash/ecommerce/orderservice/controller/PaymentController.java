@@ -2,6 +2,7 @@ package com.abhilash.ecommerce.orderservice.controller;
 
 import com.abhilash.ecommerce.orderservice.dto.PaymentDto;
 import com.abhilash.ecommerce.orderservice.service.PaymentService;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/api/customer/{customerId}")
+@Api(description = "Resources related to Payment entity")
 public class PaymentController {
     private PaymentService paymentService;
 

@@ -2,6 +2,7 @@ package com.abhilash.ecommerce.orderservice.controller;
 
 import com.abhilash.ecommerce.orderservice.dto.ProductDto;
 import com.abhilash.ecommerce.orderservice.service.ProductService;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/product")
+@Api(description = "Resources related to Product entity")
 public class ProductController {
     private final ProductService productService;
 
