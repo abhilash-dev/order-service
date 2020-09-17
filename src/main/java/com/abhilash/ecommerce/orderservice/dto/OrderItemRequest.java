@@ -19,6 +19,5 @@ import java.util.UUID;
 @Builder
 public class OrderItemRequest {
     private UUID customerId;
-    private UUID orderId;
     private List<ItemDto> items;
 }

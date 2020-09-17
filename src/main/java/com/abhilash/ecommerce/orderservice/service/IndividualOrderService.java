@@ -80,28 +80,28 @@ public class IndividualOrderService {
 
     @Synchronized
     @Transactional
-    public OrderItemResponse addItemsToOrder(OrderItemRequest orderItemRequest) {
+    public OrderItemResponse addItemsToOrder(String orderId, OrderItemRequest orderItemRequest) {
         log.trace("Entering addItemsToOrder method with request - {}", orderItemRequest);
-        log.debug("received a request to add {} items to order - {}", orderItemRequest.getItems().size(), orderItemRequest.getOrderId());
+        log.debug("received a request to add {} items to order - {}", orderItemRequest.getItems().size(), orderId);
         if (!customerRepo.existsById(orderItemRequest.getCustomerId())) {
             log.error("BAD REQUEST: Invalid customer with customerId - ", orderItemRequest.getCustomerId());
             throw new BadRequestException("Invalid customer");
         }
 
-        CustomerOrder order = orderRepo.findById(orderItemRequest.getOrderId()).orElseThrow(() -> new BadRequestException("Invalid orderId"));
+        CustomerOrder order = orderRepo.findById(UUID.fromString(orderId)).orElseThrow(() -> new BadRequestException("Invalid orderId"));
 
         CustomerAndOrderId customerAndOrderId = new CustomerAndOrderId();
         customerAndOrderId.setCustomerId(orderItemRequest.getCustomerId());
-        customerAndOrderId.setOrderId(orderItemRequest.getOrderId());
+        customerAndOrderId.setOrderId(UUID.fromString(orderId));
         customerAndOrderRepo.findById(customerAndOrderId).orElseThrow(() -> new BadRequestException("Invalid orderId for customer"));
 
-        OrderDetail orderDetail = orderDetailRepo.findById(order.getOrderDetailsId()).get();
+        OrderDetail orderDetail = orderDetailRepo.findById(order.getId()).get();
         List<Item> newItems = orderItemRequest.getItems().parallelStream().map(this::mapItemDtoToEntity).map(this.itemRepo::save).collect(Collectors.toList());
         orderDetail.getItems().addAll(newItems);
         OrderDetail savedOrderDetails = orderDetailRepo.save(orderDetail);
-        log.trace("Finishing addItemsToOrder method for order - {}", orderItemRequest.getOrderId());
+        log.trace("Finishing addItemsToOrder method for order - {}", orderId);
         return OrderItemResponse.builder()
-                .orderId(orderItemRequest.getOrderId())
+                .orderId(UUID.fromString(orderId))
                 .items(savedOrderDetails.getItems().parallelStream().map(this::mapItemEntityToDTO).collect(Collectors.toList()))
                 .orderStatus(order.getStatus())
                 .build();
@@ -110,20 +110,20 @@ public class IndividualOrderService {
 
     @Synchronized
     @Transactional
-    public OrderItemResponse removeItemsFromOrder(OrderItemRequest orderItemRequest) {
+    public OrderItemResponse removeItemsFromOrder(String orderId, OrderItemRequest orderItemRequest) {
         log.trace("Entering removeItemsFromOrder with - {}", orderItemRequest);
         if (!customerRepo.existsById(orderItemRequest.getCustomerId())) {
             throw new BadRequestException("Invalid customer");
         }
 
-        CustomerOrder order = orderRepo.findById(orderItemRequest.getOrderId()).orElseThrow(() -> new BadRequestException("Invalid orderId"));
+        CustomerOrder order = orderRepo.findById(UUID.fromString(orderId)).orElseThrow(() -> new BadRequestException("Invalid orderId"));
 
         CustomerAndOrderId customerAndOrderId = new CustomerAndOrderId();
         customerAndOrderId.setCustomerId(orderItemRequest.getCustomerId());
-        customerAndOrderId.setOrderId(orderItemRequest.getOrderId());
+        customerAndOrderId.setOrderId(UUID.fromString(orderId));
         customerAndOrderRepo.findById(customerAndOrderId).orElseThrow(() -> new BadRequestException("Invalid orderId for customer"));
 
-        OrderDetail orderDetail = orderDetailRepo.findById(order.getOrderDetailsId()).get();
+        OrderDetail orderDetail = orderDetailRepo.findById(order.getId()).get();
 
         orderItemRequest.getItems().parallelStream().map(this::mapItemDtoToEntity).forEach(
                 inputItem -> {
@@ -134,18 +134,18 @@ public class IndividualOrderService {
         orderDetail.setItems(orderDetail.getItems().parallelStream().filter(x -> itemRepo.existsById(x.getId())).collect(Collectors.toList()));
         OrderDetail savedOrderDetails = orderDetailRepo.save(orderDetail);
 
-        log.trace("Finishing removeItemsFromOrder for order - {}", orderItemRequest.getOrderId());
+        log.trace("Finishing removeItemsFromOrder for order - {}", orderId);
         if (savedOrderDetails.getItems().isEmpty()) {
-            removeOrder(orderItemRequest.getOrderId(), orderItemRequest.getCustomerId());
+            removeOrder(orderId, orderItemRequest.getCustomerId().toString());
             return OrderItemResponse.builder()
-                    .orderId(orderItemRequest.getOrderId())
+                    .orderId(UUID.fromString(orderId))
                     .items(Collections.emptyList())
                     .orderStatus(OrderStatus.PROCESSED)
                     .build();
         }
 
         return OrderItemResponse.builder()
-                .orderId(orderItemRequest.getOrderId())
+                .orderId(UUID.fromString(orderId))
                 .items(savedOrderDetails.getItems().parallelStream().map(this::mapItemEntityToDTO).collect(Collectors.toList()))
                 .orderStatus(order.getStatus())
                 .build();
@@ -154,19 +154,19 @@ public class IndividualOrderService {
 
     @Synchronized
     @Transactional
-    public OrderStatusResponse removeOrder(UUID orderId, UUID customerId) {
-        if (!customerRepo.existsById(customerId)) {
+    public OrderStatusResponse removeOrder(String orderId, String customerId) {
+        if (!customerRepo.existsById(UUID.fromString(customerId))) {
             throw new BadRequestException("Invalid customer");
         }
 
-        CustomerOrder order = orderRepo.findById(orderId).orElseThrow(() -> new BadRequestException("Invalid orderId"));
+        CustomerOrder order = orderRepo.findById(UUID.fromString(orderId)).orElseThrow(() -> new BadRequestException("Invalid orderId"));
 
         CustomerAndOrderId customerAndOrderId = new CustomerAndOrderId();
-        customerAndOrderId.setCustomerId(customerId);
-        customerAndOrderId.setOrderId(orderId);
+        customerAndOrderId.setCustomerId(UUID.fromString(customerId));
+        customerAndOrderId.setOrderId(UUID.fromString(orderId));
         CustomerAndOrder customerAndOrder = customerAndOrderRepo.findById(customerAndOrderId).orElseThrow(() -> new BadRequestException("Invalid orderId for customer"));
 
-        OrderDetail orderDetail = orderDetailRepo.findById(order.getOrderDetailsId()).get();
+        OrderDetail orderDetail = orderDetailRepo.findById(order.getId()).get();
         orderDetail.getItems().forEach(item -> {
             itemRepo.deleteById(item.getId());
         });
@@ -178,27 +178,27 @@ public class IndividualOrderService {
 
         return OrderStatusResponse.builder()
                 .orderStatus(OrderStatus.PROCESSED)
-                .orderId(orderId)
+                .orderId(UUID.fromString(orderId))
                 .build();
     }
 
     @Transactional
-    public OrderDto getOrder(UUID orderId, UUID customerId) {
-        if (!customerRepo.existsById(customerId)) {
+    public OrderDto getOrder(String orderId, String customerId) {
+        if (!customerRepo.existsById(UUID.fromString(customerId))) {
             throw new BadRequestException("Invalid customer");
         }
 
-        CustomerOrder order = orderRepo.findById(orderId).orElseThrow(() -> new BadRequestException("Invalid orderId"));
+        CustomerOrder order = orderRepo.findById(UUID.fromString(orderId)).orElseThrow(() -> new BadRequestException("Invalid orderId"));
 
         CustomerAndOrderId customerAndOrderId = new CustomerAndOrderId();
-        customerAndOrderId.setCustomerId(customerId);
-        customerAndOrderId.setOrderId(orderId);
+        customerAndOrderId.setCustomerId(UUID.fromString(customerId));
+        customerAndOrderId.setOrderId(UUID.fromString(orderId));
         customerAndOrderRepo.findById(customerAndOrderId).orElseThrow(() -> new BadRequestException("Invalid orderId for customer"));
 
-        OrderDetail orderDetail = orderDetailRepo.findById(order.getOrderDetailsId()).get();
+        OrderDetail orderDetail = orderDetailRepo.findById(order.getId()).get();
 
         return OrderDto.builder()
-                .orderId(orderId)
+                .orderId(UUID.fromString(orderId))
                 .orderStatus(order.getStatus())
                 .shipmentType(order.getShipmentType())
                 .items(orderDetail.getItems().parallelStream().map(this::mapItemEntityToDTO).collect(Collectors.toList()))
@@ -227,7 +227,6 @@ public class IndividualOrderService {
                     .customerId(UUID.fromString(orderRequest.getCustomerId()))
                     .status(OrderStatus.CREATED)
                     .shipmentType(orderRequest.getShipmentType())
-                    .orderDetailsId(savedOrderDetail.getId())
                     .addressLine1(orderRequest.getAddressLine1())
                     .addressLine2(orderRequest.getAddressLine2())
                     .city(orderRequest.getCity())
@@ -239,7 +238,6 @@ public class IndividualOrderService {
                     .customerId(UUID.fromString(orderRequest.getCustomerId()))
                     .status(OrderStatus.CREATED)
                     .shipmentType(orderRequest.getShipmentType())
-                    .orderDetailsId(savedOrderDetail.getId())
                     .build();
         }
         return order;
@@ -247,6 +245,7 @@ public class IndividualOrderService {
 
     private Item mapItemDtoToEntity(ItemDto itemDto) {
         return Item.builder()
+                .id(itemDto.getId())
                 .productId(itemDto.getProductId())
                 .quantity(itemDto.getQuantity())
                 .build();

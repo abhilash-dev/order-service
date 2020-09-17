@@ -22,7 +22,6 @@ public class CustomerOrder {
     private UUID id;
     private UUID customerId;
     private OrderStatus status;
-    private UUID orderDetailsId;
     private UUID paymentId;
     private ShipmentType shipmentType;
     private String addressLine1;
