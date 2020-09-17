@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class BulkOrderService {
     // TODO: Refactor the kafka related methods to it's own service
-    private final KafkaTemplate<String, OrderRequest> kafkaTemplate;
+    private final KafkaTemplate<String, BulkOrderRequest> kafkaTemplate;
     private final OrderRepo orderRepo;
 
     public List<OrderStatusResponse> createBulkOrder(List<OrderRequest> orderRequestList) {
