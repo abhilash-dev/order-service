@@ -1,13 +1,14 @@
 package com.abhilash.ecommerce.orderservice.model;
 
+import com.abhilash.ecommerce.orderservice.util.CustomerPaymentId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import java.util.UUID;
 
 @Builder
@@ -15,12 +16,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Customer {
+@IdClass(CustomerPaymentId.class)
+public class CustomerAndPayment {
     @Id
-    @GeneratedValue
-    private UUID id;
-    private String name;
-    private String email;
+    private UUID customerId;
+    @Id
     private UUID paymentId;
-    //TODO: make this payment field OnetoMany in order to accomodate multiple payments for an individual customer
 }

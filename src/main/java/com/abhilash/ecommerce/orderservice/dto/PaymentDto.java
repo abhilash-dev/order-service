@@ -1,23 +1,18 @@
-package com.abhilash.ecommerce.orderservice.model;
+package com.abhilash.ecommerce.orderservice.dto;
 
+import com.abhilash.ecommerce.orderservice.model.PaymentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.util.UUID;
 
-@Builder
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Payment {
-    @Id
-    @GeneratedValue
+@NoArgsConstructor
+@Data
+@Builder
+public class PaymentDto {
     private UUID id;
     private PaymentType type;
     private String addressLine1;
@@ -25,5 +20,4 @@ public class Payment {
     private String city;
     private String state;
     private int zip;
-    //TODO: Consider adding more fields / customizing the same based on the PaymentType
 }

@@ -26,7 +26,7 @@ public class CustomerService {
     }
 
     public CustomerDto getCustomer(String customerId) {
-        return mapToDao(customerRepo.findById(UUID.fromString(customerId))
+        return mapToDto(customerRepo.findById(UUID.fromString(customerId))
                 .orElseThrow(() -> new BadRequestException("Invalid customerId - " + customerId))
         );
     }
@@ -42,7 +42,7 @@ public class CustomerService {
         Customer customer = mapToEntity(customerDto);
         customer.setId(UUID.fromString(customerId));
 
-        return mapToDao(customerRepo.save(customer));
+        return mapToDto(customerRepo.save(customer));
     }
 
     @Transactional
@@ -50,7 +50,7 @@ public class CustomerService {
         if (customerRepo.existsByEmail(customerDto.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
-        return mapToDao(customerRepo.save(mapToEntity(customerDto)));
+        return mapToDto(customerRepo.save(mapToEntity(customerDto)));
     }
 
     private Customer mapToEntity(CustomerDto customerDto) {
@@ -60,7 +60,7 @@ public class CustomerService {
                 .build();
     }
 
-    private CustomerDto mapToDao(Customer customer) {
+    private CustomerDto mapToDto(Customer customer) {
         return CustomerDto.builder()
                 .id(customer.getId())
                 .name(customer.getName())
